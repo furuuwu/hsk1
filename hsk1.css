@@ -1,0 +1,16 @@
+/* This makes the first column (the Characters) twice as large */
+td:first-child {
+    font-size: 210%;
+}
+
+td:nth-child(2) {
+    font-size: 150%;
+}
+
+.no-enlarge td:first-child {
+    font-size: 100%;
+}
+
+.no-enlarge td:nth-child(2) {
+    font-size: 100%;
+}
