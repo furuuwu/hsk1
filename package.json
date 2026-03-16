@@ -1,0 +1,24 @@
+{
+  "name": "hsk1",
+  "version": "1.0.0",
+  "description": "愿上帝帮助我",
+  "homepage": "https://github.com/furuuwu/hsk1#readme",
+  "bugs": {
+    "url": "https://github.com/furuuwu/hsk1/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/furuuwu/hsk1.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server . -c-1",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

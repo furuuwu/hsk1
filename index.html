@@ -1722,5 +1722,102 @@
     <li><strong>Family member?</strong> You can leave it out.</li>
     <li><strong>Pronouns?</strong> "My," "Your," and "His" are just "I + 的," "You + 的," and "He + 的."</li>
   </ol>
+  <script>
+    /**
+     * Speaks a Chinese text string using the Web Speech API (SpeechSynthesis).
+     * Attempts to use a Mandarin Chinese voice if available, otherwise falls
+     * back to setting the lang property to 'zh-CN'.
+     *
+     * @param {string} text - The Chinese text to speak.
+     * @returns {void}
+     */
+    function speakChinese(text) {
+      if (!('speechSynthesis' in window)) {
+        alert('Sorry, your browser does not support the Web Speech API.');
+        return;
+      }
+
+      // Cancel any ongoing speech first
+      window.speechSynthesis.cancel();
+
+      /** @type {SpeechSynthesisUtterance} */
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      utterance.rate = 0.85;
+
+      // Try to pick a Chinese voice if one is already loaded
+      /** @type {SpeechSynthesisVoice[]} */
+      const voices = window.speechSynthesis.getVoices();
+      /** @type {SpeechSynthesisVoice | undefined} */
+      const zhVoice = voices.find(
+        (v) => v.lang.startsWith('zh') || v.lang.startsWith('cmn')
+      );
+      if (zhVoice) {
+        utterance.voice = zhVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    /**
+     * Extracts the Chinese text from an Example Phrase table cell.
+     * The Chinese text is the content before the first <br> tag.
+     *
+     * @param {HTMLTableCellElement} td - The table cell containing the example phrase.
+     * @returns {string} The extracted Chinese text, trimmed.
+     */
+    function extractChineseText(td) {
+      /** @type {string} */
+      let chinese = '';
+      for (const node of td.childNodes) {
+        if (node.nodeName === 'BR') break;
+        chinese += node.textContent;
+      }
+      return chinese.trim();
+    }
+
+    /**
+     * Initializes all Example Phrase cells by prepending a 🔊 speak button.
+     * Only targets vocabulary tables (skips tables with the .no-enlarge class).
+     *
+     * @returns {void}
+     */
+    function initSpeakButtons() {
+      /** @type {NodeListOf<HTMLTableElement>} */
+      const tables = document.querySelectorAll('table:not(.no-enlarge)');
+
+      tables.forEach((table) => {
+        /** @type {NodeListOf<HTMLTableRowElement>} */
+        const rows = table.querySelectorAll('tbody tr');
+
+        rows.forEach((row) => {
+          /** @type {HTMLTableCellElement | null} */
+          const exampleTd = row.querySelector('td:nth-child(4)');
+          if (!exampleTd) return;
+
+          const chineseText = extractChineseText(exampleTd);
+          if (!chineseText) return;
+
+          /** @type {HTMLButtonElement} */
+          const btn = document.createElement('button');
+          btn.className = 'speak-btn';
+          btn.textContent = '🔊';
+          btn.title = 'Listen to pronunciation';
+          btn.setAttribute('aria-label', `Listen: ${chineseText}`);
+          btn.addEventListener('click', () => speakChinese(chineseText));
+
+          exampleTd.insertBefore(btn, exampleTd.firstChild);
+        });
+      });
+    }
+
+    // Voices may load asynchronously in some browsers; ensure they're ready
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {};
+    }
+
+    // Run on DOM ready
+    initSpeakButtons();
+  </script>
 </body>
 </html>
