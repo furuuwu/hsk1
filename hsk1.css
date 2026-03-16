@@ -14,3 +14,12 @@ td:nth-child(2) {
 .no-enlarge td:nth-child(2) {
     font-size: 100%;
 }
+
+body {
+    /* Checks for the Windows font first, then the Mac font, and falls back to standard sans-serif */
+    font-family: "Microsoft JhengHei", "微軟正黑體", "Heiti TC", "黑體-繁", sans-serif;
+
+    /* background and text colors */
+    background-color: #fafaff;
+    color: #111110;
+}
